@@ -1,191 +1,44 @@
 "use client";
-import { CheckIcon, Loader2, PlusIcon, Search } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import debounce from 'lodash/debounce';
-import { startTransition, useCallback, useState, useEffect} from 'react';
+import { useState } from "react";
 
-import { User } from "rettiwt-api";
-import { 
-    Avatar,
-    AvatarFallback,
-    AvatarImage,
-} from "@/components/ui/avatar";
-import { Users2 } from "lucide-react";
-import { getCreator } from "@/utils/data/creator/getCreator";
-import { isUserConnectedToCreator } from "@/utils/data/creator/isUserConnectedToCreator";
-import { useUser } from "@clerk/nextjs";
-import { toast } from "sonner";
-import { createCreator } from "@/utils/data/creator/createCreator";
-import { connectCreatorAndUser } from "@/utils/data/creator/connectCreatorAndUser";
+import { PageTitle } from "@/components/pageTitle";
+import { SidebarNav } from "@/components/sideNavbar";
+import { ConnectTabIcons, ConnectTabs } from "./_components/connectutils";
 
-const Connect = () => {
-    const {user:userInfo} = useUser();
-    const [searchTerm, setSearchTerm] = useState<string>("");
-    const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [error, setError] = useState<string>("");
-    const [user , setUser] = useState<User | null>(null)
-    const [creatorExistInDb, setCreatorExistInDb] = useState<boolean>(false)
-    const [creatorId, setCreatorId] = useState<string | null>(null);
-    const [debouncedSearchTerm, setDebouncedSearchTerm] = useState<string>('');
-    const [isCreatorConnected, setIsCreatorConnected] = useState<boolean>(false)
-    const [connectingUserToCreator, setConnectingUserToCreator] = useState<boolean>(false)
-    
-    const debouncedSearch = useCallback(
-        debounce((searchTerm: string) => {
-            startTransition(() => {
-                setDebouncedSearchTerm(searchTerm);
-            })
-        }, 300),
-        []
-    )
-    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value;
-        setSearchTerm(value);
-        debouncedSearch(value);
-    }
-    useEffect(() => {
-        if(debouncedSearchTerm){
-            (async () => {
-                setIsLoading(true)
-                setError("")
-                setCreatorId(null)
-                setCreatorExistInDb(false)
-                setIsCreatorConnected(false)
-                
-                try{
-                    const response = await fetch('/api/tools/x/searchUser', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ userName: debouncedSearchTerm }),
-                    });
-                    const data = await response.json();
-                    setUser(data)
+type TabNamesKeys = keyof typeof ConnectTabs;
+const TabNames = Object.keys(ConnectTabs) as (keyof typeof ConnectTabs)[];
 
-                    //checking if creator exists in db
-                    const res: {id: string | null; exist: boolean} = await getCreator({creatorId: data.id})
-                    if(!res.exist){
-                        setCreatorExistInDb(false)
-                        setIsCreatorConnected(false)
-                        return
-                    }
-                    
-                    setCreatorId(res.id)
-                    setCreatorExistInDb(res.exist)
+const ConnectPage = () => {
+  const [activeTab, setActiveTab] = useState(TabNames[0]);
 
-                    //checking if user is already connected
-                    const res2: {id: string | null; connected: boolean} = await isUserConnectedToCreator({creatorId: res.id!})
-                    setIsCreatorConnected(res2.connected)
-                }catch(error:any){
-                    setError(error.message)
-                }finally{
-                    setIsLoading(false)
-                }
-            })();
-        }else{
-            setUser(null)
-            setCreatorId(null)
-            setCreatorExistInDb(false)
-            setIsCreatorConnected(false)
-            setError("")
-        }
-    }, [debouncedSearchTerm])
-    const handleConnect = async() => {
-        try{
-            setConnectingUserToCreator(true)
-            let finalCreatorId = creatorId;
-            
-            if(!creatorExistInDb){
-                const newCreator = await createCreator({
-                    creatorData: {
-                        username: user?.userName!,
-                        xId: user?.id!,
-                        name: user?.fullName,
-                        profileImageUrl: user?.profileImage,
-                    }
-                });
-                finalCreatorId = newCreator.id;
-            }
-            
-            await connectCreatorAndUser({
-                creatorId: finalCreatorId!
-            });
-            
-            setCreatorId(finalCreatorId);
-            setCreatorExistInDb(true);
-            setIsCreatorConnected(true);
-            toast.success("Connected to creator");
-        }catch(error:any){
-            console.log(error);
-            toast.error(error.message);
-        }finally{
-            setConnectingUserToCreator(false);
-        }
-    }
-    return (
-        <div className="flex flex-col items-center justify-center h-full w-full">
-            <div className="flex items-center justify-center m-[2rem] p-[2rem]">
-                <h1 className="scroll-m-20 text-4xl font-bold tracking-tight">Connect Your Fav Creators on x</h1>
-            </div>
-            <div className="mt-2 flex items-center justify-center">
-                <div className="relative w-full max-w-sm">
-                    <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                    <Input
-                        placeholder='Enter Creator Name  e.g @elonmusk'
-                        value={searchTerm}
-                        onChange={handleSearchChange}
-                        className="pl-10 w-[18rem]"
-                    />
-                </div>
-            </div>
-            <div className="mt-2 flex items-center justify-center">
-                {isLoading ? (
-                    <div className="flex items-center gap-2">
-                        <p>Searching</p>
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                    </div>
-                ) : debouncedSearchTerm && !user ? (
-                    <p className="text-muted-foreground">No user found with such username</p>
-                ) : user ? (
-                    <div className="flex items-center justify-between w-[16rem]">
-                        <div className="flex items-start gap-2 justify-center rounded-md">
-                            <Avatar className="h-12 w-12 mr-1">
-                                <AvatarImage src={user.profileImage} />
-                                <AvatarFallback className="bg-[#6B7C85]">
-                                    <Users2 className="h-6 w-6" />
-                                </AvatarFallback>
-                            </Avatar>
-                            <div className="flex-col min-w-0 flex justify-center items-center text-center">
-                                <h3 className="text-md font-semibold truncate">
-                                    @{user.fullName}
-                                </h3>
-                                <p className="text-md font-semibold truncate text-muted-foreground">@{user.userName}</p>
-                            </div>
-                            
-                        </div>
-                        <div className="flex items-center justify-center hover:bg-[#dce9f1] hover:cursor-pointer p-2 rounded-md">
-                            {
-                                connectingUserToCreator ? (
-                                    <Loader2 className="h-4 w-4 animate-spin" />
-                                ) : (
-                                    !creatorExistInDb ? (
-                                        <p className="text-md font-semibold truncate text-muted-foreground"><PlusIcon className="size-4 font-extrabold" onClick={handleConnect}/></p>
-                                    ) :
-                                    !isCreatorConnected ? (
-                                        <p className="text-md font-semibold truncate text-muted-foreground"><PlusIcon className="size-4 font-extrabold" onClick={handleConnect}/></p>
-                                    ) : (
-                                        <p className="text-md font-semibold truncate text-muted-foreground"><CheckIcon className="size-4 font-extrabold" /></p>
-                                    )
-                                )
-                            }
-                        </div>
-                    </div>
-                ) : null}
-            </div>
+  const CurrentTab = ConnectTabs[activeTab];
+
+  return (
+    <div className="h-screen w-full">
+        <PageTitle
+          heading="Settings"
+          subHeading="Fine-tune your chatbot's behavior, appearance, and functionality"
+        />
+        <div className="flex flex-col gap-4 p-4 h-[calc(100vh-120px)] max-w-7xl lg:mx-auto lg:grid lg:grid-cols-12">
+          <SidebarNav
+            className="col-span-2"
+            items={TabNames.map((x: any) => {
+              return {
+                title: x,
+                icon: ConnectTabIcons[x],
+                active: activeTab === x,
+                onClick: () => {
+                  setActiveTab(x);
+                },
+              };
+            })}
+          />
+          <div className="col-span-10 overflow-y-auto">
+            <CurrentTab />
+          </div>
         </div>
-    )
+    </div>
+  );
 };
 
-export default Connect;
+export default ConnectPage;

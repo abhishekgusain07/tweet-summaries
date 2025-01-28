@@ -49,6 +49,7 @@
     "@tabler/icons-react": "^2.46.0",
     "@tanstack/react-query": "^5.0.1",
     "@tanstack/react-query-devtools": "^5.0.1",
+    "@tanstack/react-table": "^8.20.6",
     "@tremor/react": "^3.16.2",
     "@types/lodash": "^4.17.14",
     "@upstash/ratelimit": "^1.2.1",
