@@ -8,6 +8,11 @@ const nextConfig = {
       pathname: '/**'
     }, {
       protocol: 'https',
+      hostname: 'pbs.twimg.com',
+      port: '',
+      pathname: '/**'
+    }, {
+      protocol: 'https',
       hostname: 'seo-heist.s3.amazonaws.com',
       port: '',
       pathname: '/**'
