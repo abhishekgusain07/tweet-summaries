@@ -2,7 +2,7 @@
 
 const AllSummaries = () => {
     return (
-        <div>AllSummaries</div>
+        <div id="all_summaries">AllSummaries</div>
     )
 }
 export default AllSummaries;

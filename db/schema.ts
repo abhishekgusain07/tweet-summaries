@@ -1,4 +1,4 @@
-import { pgTable, serial, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { pgEnum, pgTable, serial, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
 export const users = pgTable("users", {
@@ -95,4 +95,44 @@ export const userCreatorsRelations = relations(userCreators, ({ one }) => ({
 // This tells Drizzle that one user can have many entries in userCreators table
 export const usersRelations = relations(users, ({ many }) => ({
   userCreators: many(userCreators)
+}));
+
+export const mediaType = pgEnum('media_type', ['image', 'video', 'gif']);
+
+export const summaries = pgTable("summaries", {
+  id: text("id").primaryKey(),
+  userId: text("user_id").notNull().references(() => users.id),
+  creatorIds: text("creator_ids").array().notNull(),  // Array of creator IDs
+  tweetId: text("tweet_id").notNull(),  // Original tweet ID
+  content: text("content").notNull(),    // Summary content
+  generatedAt: timestamp("generated_at").notNull(),
+  createdTime: timestamp("created_time").defaultNow(),
+}, (table) => ({
+  creatorIdsIndex: uniqueIndex("creator_ids_index").on(table.creatorIds)
+}));
+
+export const summaryMedia = pgTable("summary_media", {
+  id: text("id").primaryKey(),
+  summaryId: text("summary_id").notNull().references(() => summaries.id),
+  url: text("url").notNull(),
+  thumbnailUrl: text("thumbnail_url"),
+  type: mediaType("type").notNull(),
+  createdTime: timestamp("created_time").defaultNow(),
+},(table) => ({
+  summaryIdIndex: uniqueIndex("summary_id_index").on(table.summaryId)
+}));
+
+export const summariesRelations = relations(summaries, ({ many, one }) => ({
+  media: many(summaryMedia),
+  user: one(users, {
+    fields: [summaries.userId],
+    references: [users.id]
+  })
+}));
+
+export const summaryMediaRelations = relations(summaryMedia, ({ one }) => ({
+  summary: one(summaries, {
+    fields: [summaryMedia.summaryId],
+    references: [summaries.id]
+  })
 }));

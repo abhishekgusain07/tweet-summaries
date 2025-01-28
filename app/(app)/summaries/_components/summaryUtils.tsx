@@ -11,8 +11,12 @@ export const SummaryTabIcons: Record<string, React.ReactNode> = {
 
 interface SummaryProps extends React.PropsWithChildren {}
 
-export const SummaryTabs: Record<string, React.ComponentType<SummaryProps>> = {
-  "Create": React.lazy(() => import("./GenerateSummaries")),
+interface GenerateSummariesProps extends SummaryProps {
+  onGenerateComplete: () => void;
+}
+
+export const SummaryTabs: Record<string, React.ComponentType<any>> = {
+  "Create": React.lazy(() => import("./GenerateSummaries")) as React.ComponentType<GenerateSummariesProps>,
   "All_Summaries": React.lazy(() => import("./AllSummaries")),
   "Settings": React.lazy(() => import("./Settings")),
 };

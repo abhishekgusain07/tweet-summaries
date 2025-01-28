@@ -9,14 +9,17 @@ import { TabCard } from "@/components/Tabcard";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import CreatorsListPreview from "../../connect/_components/creatorsSkeleton";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
-const GenerateSummaries = () => {
+const GenerateSummaries = ({ onGenerateComplete }: { onGenerateComplete: () => void }) => {
     const {user: userInfo} = useUser();
     const [creators, setCreators] = useState<Creator[]>([])
     const [selectedCreators, setSelectedCreators] = useState<Set<string>>(new Set())
     const [creatorsLoading, setCreatorsLoading] = useState<boolean>(false)
     const [mounted, setMounted] = useState(false);
-
+    const [generatingSummaries, setGeneratingSummaries] = useState<boolean>(false)
+    const router = useRouter()
     const toggleCreator = (creatorId: string) => {
         setSelectedCreators(prev => {
             const newSet = new Set(prev);
@@ -33,7 +36,7 @@ const GenerateSummaries = () => {
         if (selectedCreators.size === creators.length) {
             setSelectedCreators(new Set());
         } else {
-            setSelectedCreators(new Set(creators.map(c => c.id)));
+            setSelectedCreators(new Set(creators.map(c => c.xId)));
         }
     };
 
@@ -52,6 +55,19 @@ const GenerateSummaries = () => {
         }
         fetchAllCreators()
     }, [])
+
+    const generateSummaries = async () => {
+        setGeneratingSummaries(true)
+        try {
+            const result = await generateSummariesFromCreators({creatorIds: Array.from(selectedCreators)})
+            toast.success("Summaries generated successfully")
+            onGenerateComplete()
+        } catch (error: any) {
+            console.log("generateSummaries -> error", error)
+        }finally {
+            setGeneratingSummaries(false)
+        }
+    }
 
     if (!mounted) {
         return <CreatorsListPreview />;
@@ -84,7 +100,7 @@ const GenerateSummaries = () => {
                     </Button>
                     <Button
                         variant="default"
-                        onClick={()=>{}}
+                        onClick={generateSummaries}
                         className="flex items-center gap-2"
                     >
                        <Pickaxe className="size-4"/> Generate Summaries
@@ -104,7 +120,7 @@ const GenerateSummaries = () => {
                                             key={i} 
                                             creator={creator} 
                                             isSelected={selectedCreators.has(creator.id)}
-                                            onToggle={() => toggleCreator(creator.id)}
+                                            onToggle={() => toggleCreator(creator.xId)}
                                         />
                                     ))
                                 ) : (

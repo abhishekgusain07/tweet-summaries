@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { InferSelectModel, InferInsertModel } from "drizzle-orm";
-import { users, subscriptions, subscriptionPlans, invoices, creators, userCreators } from "@/db/schema";
+import { users, subscriptions, subscriptionPlans, invoices, creators, userCreators, summaries, summaryMedia } from "@/db/schema";
 export type userCreateProps = z.infer<typeof userCreateSchema>;
 
 const userCreateSchema = z.object({
@@ -87,4 +87,42 @@ export interface NewCreatorData {
   xId: string;
   name?: string;
   profileImageUrl?: string;
+}
+
+
+// Add new types for summaries and summary media
+export type Summary = InferSelectModel<typeof summaries>;
+export type NewSummary = InferInsertModel<typeof summaries>;
+
+export type SummaryMedia = InferSelectModel<typeof summaryMedia>;
+export type NewSummaryMedia = InferInsertModel<typeof summaryMedia>;
+
+// Add related data types for summaries
+export interface SummaryWithMedia extends Summary {
+  media: SummaryMedia[];
+  user: User;
+}
+
+export interface SummaryMediaWithSummary extends SummaryMedia {
+  summary: Summary;
+}
+
+// Add type for the media enum
+export type MediaType = 'image' | 'video' | 'gif';
+
+// Add type for creating a new summary
+export interface NewSummaryData {
+  userId: string;
+  creatorIds: string[];
+  tweetId: string;
+  content: string;
+  generatedAt: Date;
+}
+
+// Add type for creating new summary media
+export interface NewSummaryMediaData {
+  summaryId: string;
+  url: string;
+  thumbnailUrl?: string;
+  type: MediaType;
 }

@@ -7,7 +7,7 @@ import { SidebarNav } from "@/components/sideNavbar";
 import { SummaryTabIcons, SummaryTabs } from "./_components/summaryUtils";
 import { Loader2 } from "lucide-react";
 import CreatorsListPreview from "../connect/_components/creatorsSkeleton";
-
+import { Tweet} from "rettiwt-api"
 type TabNamesKeys = keyof typeof SummaryTabs;
 const TabNames = Object.keys(SummaryTabs) as (keyof typeof SummaryTabs)[];
 
@@ -53,7 +53,9 @@ const SummariesPage = () => {
         />
         <div className="col-span-10 overflow-y-auto">
           <Suspense fallback={<div className="flex items-center justify-center h-full"><Loader2 className="size-6 animate-spin" /></div>}>
-            <CurrentTab />
+            {
+              activeTab === "Create" ? <CurrentTab onGenerateComplete={() => setActiveTab("All_Summaries")} /> : <CurrentTab />
+            }
           </Suspense>
         </div>
       </div>
