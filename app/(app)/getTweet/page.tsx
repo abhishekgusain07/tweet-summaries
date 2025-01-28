@@ -41,7 +41,7 @@ const GetTweet = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [tweet, setTweet] = useState<any>(null);
     const [userImage, setUserImage] = useState<string>("");
-    const [error, setError] = useState<boolean>(false);
+    const [error, setError] = useState<string>("");
     const handleGetTweet = async (e: any) => {
         setIsLoading(true)
         e.preventDefault();
@@ -56,10 +56,9 @@ const GetTweet = () => {
             });
             const data = await response.json();
             setTweet(data);
-            console.log(data)
             setUserImage(data.tweetBy.profileImage)
-        } catch (error) {
-            setError(true)
+        } catch (error: any) {
+            setError(error.message)
         }finally {
             setIsLoading(false)
         }
@@ -81,13 +80,13 @@ const GetTweet = () => {
             </div>
             {
                 isLoading ? <Loader2 className='animate-spin' /> :
-                error ? <p className='text-red-500'>Something went wrong</p> :
+                error ? <p className='text-red-500'>{error}</p> :
                 tweet ? <div className='flex flex-col items-center justify-center gap-2'>
                     <div className='flex items-center justify-center gap-2'>
                         <Image src={userImage} alt='user' width={50} height={50} />
                         <p>{tweet.tweetBy.name}</p>
                     </div>
-                    <p>{tweet.tweet}</p>
+                    <p>{tweet.fullText}</p>
                     {
                         tweet.media ? tweet.media.map((media: any) => {
                             if(media.type === 'photo') return (

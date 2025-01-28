@@ -43,6 +43,13 @@
       "when": 1738034651134,
       "tag": "0005_busy_psylocke",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1738049114949,
+      "tag": "0006_wooden_black_queen",
+      "breakpoints": true
     }
   ]
 }
