@@ -26,7 +26,12 @@ export const createCreator = async ({
             profileImageUrl: creatorData.profileImageUrl,
         })
         .returning();
-        return creator;
+        
+        if (!creator || creator.length === 0) {
+            throw new Error("Failed to create creator");
+        }
+        
+        return creator[0];
     } catch (error: any) {
         throw new Error("Error while creating creator: " + error.message);
     }

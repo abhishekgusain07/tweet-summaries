@@ -14,6 +14,7 @@ export const connectCreatorAndUser = async ({
         if(!userId) {
             throw new Error("Unauthorized");
         }
+        console.log("creatorId -> 🥶🥶🥶 ", creatorId)
         if(!creatorId) {
             throw new Error("Creator id is required");
         }
@@ -29,7 +30,7 @@ export const connectCreatorAndUser = async ({
         })
         .returning();
         return {
-            id: result[0].id,
+            id: result[0]?.id,
             connected: true
         }
     } catch (error: any) {

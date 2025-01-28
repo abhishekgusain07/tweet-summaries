@@ -48,13 +48,18 @@ const Connect = () => {
         if(debouncedSearchTerm){
             (async () => {
                 setIsLoading(true)
+                setError("")
+                setCreatorId(null)
+                setCreatorExistInDb(false)
+                setIsCreatorConnected(false)
+                
                 try{
                     const response = await fetch('/api/tools/x/searchUser', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ userName: debouncedSearchTerm }),
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ userName: debouncedSearchTerm }),
                     });
                     const data = await response.json();
                     setUser(data)
@@ -62,13 +67,16 @@ const Connect = () => {
                     //checking if creator exists in db
                     const res: {id: string | null; exist: boolean} = await getCreator({creatorId: data.id})
                     if(!res.exist){
+                        setCreatorExistInDb(false)
+                        setIsCreatorConnected(false)
                         return
                     }
+                    
                     setCreatorId(res.id)
                     setCreatorExistInDb(res.exist)
 
                     //checking if user is already connected
-                    const res2: {id: string | null; connected: boolean} = await isUserConnectedToCreator({creatorId: data.id})
+                    const res2: {id: string | null; connected: boolean} = await isUserConnectedToCreator({creatorId: res.id!})
                     setIsCreatorConnected(res2.connected)
                 }catch(error:any){
                     setError(error.message)
@@ -78,33 +86,42 @@ const Connect = () => {
             })();
         }else{
             setUser(null)
+            setCreatorId(null)
+            setCreatorExistInDb(false)
+            setIsCreatorConnected(false)
+            setError("")
         }
     }, [debouncedSearchTerm])
     const handleConnect = async() => {
         try{
             setConnectingUserToCreator(true)
+            let finalCreatorId = creatorId;
+            
             if(!creatorExistInDb){
-                await createCreator({
+                const newCreator = await createCreator({
                     creatorData: {
                         username: user?.userName!,
                         xId: user?.id!,
                         name: user?.fullName,
                         profileImageUrl: user?.profileImage,
                     }
-                })
+                });
+                finalCreatorId = newCreator.id;
             }
-            console.log("creatorId -> 🥶🥶🥶 ", creatorId)
+            
             await connectCreatorAndUser({
-                creatorId: creatorId!
-            })
-            setCreatorExistInDb(true)
-            setIsCreatorConnected(true)
-            toast.success("Connected to creator")
+                creatorId: finalCreatorId!
+            });
+            
+            setCreatorId(finalCreatorId);
+            setCreatorExistInDb(true);
+            setIsCreatorConnected(true);
+            toast.success("Connected to creator");
         }catch(error:any){
-            console.log(error)
-            toast.error(error.message)
+            console.log(error);
+            toast.error(error.message);
         }finally{
-            setConnectingUserToCreator(false)
+            setConnectingUserToCreator(false);
         }
     }
     return (

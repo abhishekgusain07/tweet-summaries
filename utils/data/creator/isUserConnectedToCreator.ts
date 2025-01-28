@@ -36,7 +36,7 @@ export const isUserConnectedToCreator = async ({
     .execute(); 
     if(result) {
       return {
-        id: result[0].id,
+        id: result[0]?.id,
         connected: true
       }
     }
