@@ -59,10 +59,7 @@ export const creators = pgTable("creators", {
   username: text("username").unique().notNull(),
   xId: text("x_id").unique().notNull(),  // Twitter/X ID
   name: text("name"),
-  bio: text("bio"),
   profileImageUrl: text("profile_image_url"),
-  followersCount: text("followers_count"),
-  verified: text("verified"),
 });
 
 // Junction table for many-to-many relationship between users and creators

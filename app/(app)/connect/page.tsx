@@ -1,5 +1,5 @@
 "use client";
-import { Loader2, PlusIcon, Search } from "lucide-react";
+import { CheckIcon, Loader2, PlusIcon, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import debounce from 'lodash/debounce';
@@ -12,13 +12,24 @@ import {
     AvatarImage,
 } from "@/components/ui/avatar";
 import { Users2 } from "lucide-react";
+import { getCreator } from "@/utils/data/creator/getCreator";
+import { isUserConnectedToCreator } from "@/utils/data/creator/isUserConnectedToCreator";
+import { useUser } from "@clerk/nextjs";
+import { toast } from "sonner";
+import { createCreator } from "@/utils/data/creator/createCreator";
+import { connectCreatorAndUser } from "@/utils/data/creator/connectCreatorAndUser";
 
 const Connect = () => {
+    const {user:userInfo} = useUser();
     const [searchTerm, setSearchTerm] = useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>("");
     const [user , setUser] = useState<User | null>(null)
+    const [creatorExistInDb, setCreatorExistInDb] = useState<boolean>(false)
+    const [creatorId, setCreatorId] = useState<string | null>(null);
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState<string>('');
+    const [isCreatorConnected, setIsCreatorConnected] = useState<boolean>(false)
+    const [connectingUserToCreator, setConnectingUserToCreator] = useState<boolean>(false)
     
     const debouncedSearch = useCallback(
         debounce((searchTerm: string) => {
@@ -47,7 +58,18 @@ const Connect = () => {
                     });
                     const data = await response.json();
                     setUser(data)
-                    
+
+                    //checking if creator exists in db
+                    const res: {id: string | null; exist: boolean} = await getCreator({creatorId: data.id})
+                    if(!res.exist){
+                        return
+                    }
+                    setCreatorId(res.id)
+                    setCreatorExistInDb(res.exist)
+
+                    //checking if user is already connected
+                    const res2: {id: string | null; connected: boolean} = await isUserConnectedToCreator({creatorId: data.id})
+                    setIsCreatorConnected(res2.connected)
                 }catch(error:any){
                     setError(error.message)
                 }finally{
@@ -58,7 +80,33 @@ const Connect = () => {
             setUser(null)
         }
     }, [debouncedSearchTerm])
-
+    const handleConnect = async() => {
+        try{
+            setConnectingUserToCreator(true)
+            if(!creatorExistInDb){
+                await createCreator({
+                    creatorData: {
+                        username: user?.userName!,
+                        xId: user?.id!,
+                        name: user?.fullName,
+                        profileImageUrl: user?.profileImage,
+                    }
+                })
+            }
+            console.log("creatorId -> 🥶🥶🥶 ", creatorId)
+            await connectCreatorAndUser({
+                creatorId: creatorId!
+            })
+            setCreatorExistInDb(true)
+            setIsCreatorConnected(true)
+            toast.success("Connected to creator")
+        }catch(error:any){
+            console.log(error)
+            toast.error(error.message)
+        }finally{
+            setConnectingUserToCreator(false)
+        }
+    }
     return (
         <div className="flex flex-col items-center justify-center h-full w-full">
             <div className="flex items-center justify-center m-[2rem] p-[2rem]">
@@ -101,7 +149,20 @@ const Connect = () => {
                             
                         </div>
                         <div className="flex items-center justify-center hover:bg-[#dce9f1] hover:cursor-pointer p-2 rounded-md">
-                            <PlusIcon className="size-4 font-extrabold" />
+                            {
+                                connectingUserToCreator ? (
+                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                ) : (
+                                    !creatorExistInDb ? (
+                                        <p className="text-md font-semibold truncate text-muted-foreground"><PlusIcon className="size-4 font-extrabold" onClick={handleConnect}/></p>
+                                    ) :
+                                    !isCreatorConnected ? (
+                                        <p className="text-md font-semibold truncate text-muted-foreground"><PlusIcon className="size-4 font-extrabold" onClick={handleConnect}/></p>
+                                    ) : (
+                                        <p className="text-md font-semibold truncate text-muted-foreground"><CheckIcon className="size-4 font-extrabold" /></p>
+                                    )
+                                )
+                            }
                         </div>
                     </div>
                 ) : null}

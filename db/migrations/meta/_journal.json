@@ -50,6 +50,13 @@
       "when": 1738049114949,
       "tag": "0006_wooden_black_queen",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1738051984535,
+      "tag": "0007_moaning_liz_osborn",
+      "breakpoints": true
     }
   ]
 }
