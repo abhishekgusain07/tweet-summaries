@@ -1,9 +1,9 @@
 "use client";
-import { useState } from "react";
-
+import { Suspense, useState } from "react";
 import { PageTitle } from "@/components/pageTitle";
 import { SidebarNav } from "@/components/sideNavbar";
 import { ConnectTabIcons, ConnectTabs } from "./_components/connectutils";
+import { Loader2 } from "lucide-react";
 
 type TabNamesKeys = keyof typeof ConnectTabs;
 const TabNames = Object.keys(ConnectTabs) as (keyof typeof ConnectTabs)[];
@@ -34,7 +34,9 @@ const ConnectPage = () => {
             })}
           />
           <div className="col-span-10 overflow-y-auto">
-            <CurrentTab />
+            <Suspense fallback={<div className="flex items-center justify-center h-full"><Loader2 className="size-6 animate-spin" /></div>}>
+              <CurrentTab />
+            </Suspense>
           </div>
         </div>
     </div>
