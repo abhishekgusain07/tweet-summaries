@@ -73,7 +73,7 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
             )}
             {children}
           </div>
-          {action && <div className="flex items-center shrink-0">{action}</div>}
+          {action && <div className="flex items-center shrink-0 p-2">{action}</div>}
         </div>
       ) : (
         // Многострочный вариант
