@@ -4,13 +4,15 @@ import { Creator } from "@/utils/types";
 import { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
 import { getAllConnectedCreators } from "@/utils/data/creator/getAllConnectedCreator";
-import { CheckIcon, CheckSquareIcon, Pickaxe, PlusIcon, PlusSquareIcon } from "lucide-react";
+import { CheckIcon, CheckSquareIcon, Loader2, Pickaxe, PlusIcon, PlusSquareIcon } from "lucide-react";
 import { TabCard } from "@/components/Tabcard";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import CreatorsListPreview from "../../connect/_components/creatorsSkeleton";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { generateSummariesFromCreators } from "@/utils/data/summary/generateSummariesFromCreators";
+import { Tweet } from "rettiwt-api";
 
 const GenerateSummaries = ({ onGenerateComplete }: { onGenerateComplete: () => void }) => {
     const {user: userInfo} = useUser();
@@ -59,7 +61,8 @@ const GenerateSummaries = ({ onGenerateComplete }: { onGenerateComplete: () => v
     const generateSummaries = async () => {
         setGeneratingSummaries(true)
         try {
-            const result = await generateSummariesFromCreators({creatorIds: Array.from(selectedCreators)})
+            const result: Tweet[] | undefined = await generateSummariesFromCreators({creatorIds: Array.from(selectedCreators)})
+            console.log("generateSummaries -> result", result)
             toast.success("Summaries generated successfully")
             onGenerateComplete()
         } catch (error: any) {
@@ -102,8 +105,18 @@ const GenerateSummaries = ({ onGenerateComplete }: { onGenerateComplete: () => v
                         variant="default"
                         onClick={generateSummaries}
                         className="flex items-center gap-2"
+                        disabled={generatingSummaries}
                     >
-                       <Pickaxe className="size-4"/> Generate Summaries
+                       {
+                        generatingSummaries ? "Generating" :        "Generate Summaries"
+                       }
+                       {
+                        generatingSummaries ? (
+                            <Loader2 className="animate-spin h-4 w-4" />
+                        ) : (
+                            <Pickaxe className=" h-4 w-4" />
+                        )
+                       }
                     </Button>
                 </div>
             )}
@@ -119,7 +132,7 @@ const GenerateSummaries = ({ onGenerateComplete }: { onGenerateComplete: () => v
                                         <CreatorCard 
                                             key={i} 
                                             creator={creator} 
-                                            isSelected={selectedCreators.has(creator.id)}
+                                            isSelected={selectedCreators.has(creator.xId)}
                                             onToggle={() => toggleCreator(creator.xId)}
                                         />
                                     ))

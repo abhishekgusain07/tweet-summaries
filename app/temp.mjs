@@ -4,7 +4,7 @@ const key = "a2R0PThoa1BPek1LVVhEU2JESGV4a1ZoUUYwNlZnRFltUGozWGwxbExNdWU7YXV0aF9
 const rettiwt = new Rettiwt({ apiKey: key });
 
 // Fetching the first 20 timeline tweets of the User with id '1234567890'
-rettiwt.user.timeline('1211217056483303424')
+rettiwt.user.timeline('44196397')
 .then(res => {
     console.log(res);
 })
