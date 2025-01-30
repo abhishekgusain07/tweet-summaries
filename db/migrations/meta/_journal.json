@@ -71,6 +71,13 @@
       "when": 1738162219860,
       "tag": "0009_plain_stone_men",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1738245006492,
+      "tag": "0010_modern_falcon",
+      "breakpoints": true
     }
   ]
 }

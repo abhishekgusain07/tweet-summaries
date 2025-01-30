@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Tweet } from "rettiwt-api";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { addSummary } from "@/utils/data/summary/addSummary";
 
 const GenerateSummaries = ({ onGenerateComplete }: { onGenerateComplete: () => void }) => {
     const {user: userInfo} = useUser();
@@ -76,8 +77,14 @@ const GenerateSummaries = ({ onGenerateComplete }: { onGenerateComplete: () => v
             if (!res.ok) {
                 throw new Error(`Failed to fetch tweets: ${res.statusText}`);
             }
-            const data:{summary: string} = await res.json();
+            const data:{tweetIds: string[], summary: string} = await res.json();
             console.log("generatedSummaries ✅ ✅ ✅ ", data.summary)
+            //call addSummary
+            await addSummary({
+                creatorIds: Array.from(selectedCreators),
+                tweetIds: data.tweetIds,
+                content: data.summary
+            })
             toast.success("Summaries generated successfully")
             onGenerateComplete()
         } catch (error: any) {

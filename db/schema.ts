@@ -103,9 +103,8 @@ export const summaries = pgTable("summaries", {
   id: text("id").primaryKey(),
   userId: text("user_id").notNull().references(() => users.id),
   creatorIds: text("creator_ids").array().notNull(),  // Array of creator IDs
-  tweetId: text("tweet_id").notNull(),  // Original tweet ID
+  tweetIds: text("tweet_ids").array().notNull(),  // Original tweet ID
   content: text("content").notNull(),    // Summary content
-  generatedAt: timestamp("generated_at").notNull(),
   createdTime: timestamp("created_time").defaultNow(),
 }, (table) => ({
   creatorIdsIndex: uniqueIndex("creator_ids_index").on(table.creatorIds)

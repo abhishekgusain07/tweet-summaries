@@ -85,6 +85,7 @@ export async function POST(request: NextRequest) {
     
     console.log("summary --> ", response.data.choices[0].message.content)
     return NextResponse.json({
+      tweetIds: filteredTweets.map((tweet: Tweet) => tweet.id),
       summary: response.data.choices[0].message.content 
     });
   } catch (error) {
