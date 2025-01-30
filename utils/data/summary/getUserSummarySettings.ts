@@ -1,11 +1,14 @@
 "use server";
-import { Summary, User } from "@/utils/types";
+import { Summary, User, UserSummarySettings } from "@/utils/types";
 import { auth } from "@clerk/nextjs/server";
 import { getUserFromClerkId } from "../user/getUserFromClerkId";
 import { fetchTweetsFromCreators } from "../tweets/fetchTweetsFromCreators";
 import { Tweet } from "rettiwt-api";
+import { summarySettings } from "@/db/schema";
+import { db } from "@/db/drizzle";
+import { eq } from "drizzle-orm";
 
-export const generateSummariesFromCreators = async ({creatorIds}: {creatorIds: string[]}) => {
+export const getUserSummarySettings = async (): Promise<UserSummarySettings | null> => {
     try {
         const {userId} = await auth();
         if(!userId) {
@@ -15,13 +18,10 @@ export const generateSummariesFromCreators = async ({creatorIds}: {creatorIds: s
         if(!user) {
             throw new Error("User not found");
         }
-        console.log("creatorIds ✅ ✅ ✅ ✅ ", creatorIds)
-        //fetch tweet from creatorIds
-        const tweets: Tweet[] = await fetchTweetsFromCreators({creatorIds})
-        // const summaries: Summary = await generateSummariesFromTweets({tweets})
-        return tweets;
+        const result = await db.select().from(summarySettings).where(eq(summarySettings.userId, user.id)).execute();
+        return result.length > 0 ? result[0] : null;
     } catch (error: any) {
-        console.log("generateSummariesFromCreators -> error", error)
+        console.log("getUserSummarySettings -> error", error)
         throw error;
     }
 }

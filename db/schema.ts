@@ -1,4 +1,4 @@
-import { pgEnum, pgTable, serial, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
+import { pgEnum, pgTable, serial, text, timestamp, uniqueIndex, boolean, integer } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
 export const users = pgTable("users", {
@@ -135,4 +135,20 @@ export const summaryMediaRelations = relations(summaryMedia, ({ one }) => ({
     fields: [summaryMedia.summaryId],
     references: [summaries.id]
   })
+}));
+
+
+export const summarySettings = pgTable("summary_settings", {
+  id: text("id").primaryKey(),
+  userId: text("user_id").notNull().references(() => users.id),
+  frequency: integer("frequency").notNull().default(1), 
+  hasConsented: boolean("has_consented").notNull().default(false),
+  createdTime: timestamp("created_time").defaultNow()
+});
+
+export const summarySettingsRelations = relations(summarySettings, ({ one }) => ({
+  user: one(users, {
+    fields: [summarySettings.userId],
+    references: [users.id],
+  }),
 }));

@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { InferSelectModel, InferInsertModel } from "drizzle-orm";
-import { users, subscriptions, subscriptionPlans, invoices, creators, userCreators, summaries, summaryMedia } from "@/db/schema";
+import { users, subscriptions, subscriptionPlans, invoices, creators, userCreators, summaries, summaryMedia, summarySettings } from "@/db/schema";
 export type userCreateProps = z.infer<typeof userCreateSchema>;
 
 const userCreateSchema = z.object({
@@ -96,6 +96,11 @@ export type NewSummary = InferInsertModel<typeof summaries>;
 
 export type SummaryMedia = InferSelectModel<typeof summaryMedia>;
 export type NewSummaryMedia = InferInsertModel<typeof summaryMedia>;
+
+
+export type UserSummarySettings = InferSelectModel<typeof summarySettings>;
+export type NewUserSummarySettings = InferInsertModel<typeof summarySettings>;
+
 
 // Add related data types for summaries
 export interface SummaryWithMedia extends Summary {
