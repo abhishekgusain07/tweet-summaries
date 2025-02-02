@@ -106,9 +106,7 @@ export const summaries = pgTable("summaries", {
   tweetIds: text("tweet_ids").array().notNull(),  // Original tweet ID
   content: text("content").notNull(),    // Summary content
   createdTime: timestamp("created_time").defaultNow(),
-}, (table) => ({
-  creatorIdsIndex: uniqueIndex("creator_ids_index").on(table.creatorIds)
-}));
+});
 
 export const summaryMedia = pgTable("summary_media", {
   id: text("id").primaryKey(),

@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { formatDistanceToNow } from "date-fns";
+import { Carousel } from "@/components/acertnityCarousel";
 
 const AllSummaries = () => {
     const [isMounted, setisMounted] = useState(false)
@@ -65,6 +66,67 @@ const AllSummaries = () => {
 }
 export default AllSummaries;
 
+const SummaryContent = ({ content }: { content: string }) => {
+    try {
+        const parsedContent = JSON.parse(content);
+        const slideData = parsedContent.images?.map((image: string, index: number) => ({
+            title: `Image ${index + 1}`,
+            src: image,
+          })) || [];
+          
+        return (
+            <div className="space-y-4">
+                <p className="text-sm text-muted-foreground">{parsedContent.content}</p>
+                
+                {slideData.length > 0 && (
+                    <Carousel slides={slideData} />
+                )}
+                
+                {parsedContent.urls && parsedContent.urls.length > 0 && (
+                    <div className="space-y-1">
+                        <p className="text-xs font-medium text-muted-foreground">Links:</p>
+                        <div className="flex flex-wrap gap-2">
+                            {parsedContent.urls.map((url: string, index: number) => (
+                                <a
+                                    key={index}
+                                    href={url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-xs text-blue-500 hover:underline"
+                                >
+                                    {url.replace(/^https?:\/\//, '')}
+                                </a>
+                            ))}
+                        </div>
+                    </div>
+                )}
+                
+                {parsedContent.profiles && parsedContent.profiles.length > 0 && (
+                    <div className="space-y-1">
+                        <p className="text-xs font-medium text-muted-foreground">Mentioned profiles:</p>
+                        <div className="flex flex-wrap gap-2">
+                            {parsedContent.profiles.map((profile: string, index: number) => (
+                                <a
+                                    key={index}
+                                    href={profile}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-xs text-blue-500 hover:underline"
+                                >
+                                    @{profile.split('/').pop()}
+                                </a>
+                            ))}
+                        </div>
+                    </div>
+                )}
+            </div>
+        );
+    } catch (error) {
+        // Fallback for non-JSON content
+        return <p className="text-sm text-muted-foreground whitespace-pre-wrap">{content}</p>;
+    }
+};
+
 const SummaryCard = ({ summary }: { summary: Summary }) => {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -78,7 +140,9 @@ const SummaryCard = ({ summary }: { summary: Summary }) => {
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <p className="text-sm text-muted-foreground line-clamp-4">{summary.content}</p>
+                    <div className="line-clamp-4">
+                        <SummaryContent content={summary.content} />
+                    </div>
                 </CardContent>
                 <CardFooter className="text-xs text-muted-foreground">
                     {summary.creatorIds.length} creator{summary.creatorIds.length > 1 ? 's' : ''} • {summary.tweetIds.length} tweet{summary.tweetIds.length > 1 ? 's' : ''}
@@ -94,7 +158,7 @@ const SummaryCard = ({ summary }: { summary: Summary }) => {
                         </DialogDescription>
                     </DialogHeader>
                     <div className="space-y-4 overflow-y-auto pr-2 max-h-[50vh]">
-                        <p className="text-sm text-muted-foreground whitespace-pre-wrap">{summary.content}</p>
+                        <SummaryContent content={summary.content} />
                         <p className="text-xs text-muted-foreground">
                             {summary.creatorIds.length} creator{summary.creatorIds.length > 1 ? 's' : ''} • {summary.tweetIds.length} tweet{summary.tweetIds.length > 1 ? 's' : ''}
                         </p>
@@ -103,4 +167,4 @@ const SummaryCard = ({ summary }: { summary: Summary }) => {
             </Dialog>
         </>
     );
-}
+};

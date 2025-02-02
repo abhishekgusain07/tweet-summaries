@@ -42,20 +42,17 @@ export async function POST(request: NextRequest) {
         model: 'gpt-4o-mini',
         messages: [
           {
-            role: 'system',
-            content: `You are a professional content summarizer. Your task is to create a well-structured, articulate summary of tweets. Pay special attention to:
-            - Media content (images, videos, or links)
-            - URLs shared in tweets
-            - Main themes and topics discussed
-            - Chronological flow of information
-            - Any significant interactions or threads
-
-            Format your response in the following structure:
-            1. Overview (2-3 sentences about the main topics)
-            2. Key Points (bullet points of important information)
-            3. Media & Links (list any media content and URLs shared)
-            4. Notable Discussions (highlight any significant threads or conversations)
-            5. Summary (a concise wrap-up)`
+            "role": "system",
+            "content": `You are a professional content analyzer. Process tweets and return a JSON object with: 1) 'content' as a concise summary text, 2) 'images' array of image URLs, 3) 'urls' array of all mentioned links (excluding images), and 4) 'profiles' array of Twitter profile URLs. Follow these rules:
+            - Content should be a single paragraph combining key insights
+            - Never include URLs in the content text
+            - Extract all media URLs to images array
+            - Extract profile links to profiles array
+            - All other links go to urls array
+            - Use only plain text, no markdown
+            - Maintain chronological order of discussions
+            - Highlight controversial opinions
+            - Output ONLY valid JSON`
           },
           {
             role: 'user',

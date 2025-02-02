@@ -1,0 +1,1 @@
+DROP INDEX "creator_ids_index";
