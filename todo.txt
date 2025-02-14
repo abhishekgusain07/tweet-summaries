@@ -1,0 +1,3 @@
+1. work on creating tweet
+2. Make this into full twitter utility, app, create tweet to grown audience, create summaries of tweets from other users etc.
+
