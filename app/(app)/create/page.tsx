@@ -1,6 +1,6 @@
 const CreatePage = () => {
     return (
-        <div className="h-screen w-full grid grid-rows-2">
+        <div className="h-screen w-full grid grid-cols-2">
             <div>
                 Edit
             </div>

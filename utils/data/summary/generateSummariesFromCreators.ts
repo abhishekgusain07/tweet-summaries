@@ -18,7 +18,6 @@ export const generateSummariesFromCreators = async ({creatorIds}: {creatorIds: s
         console.log("creatorIds ✅ ✅ ✅ ✅ ", creatorIds)
         //fetch tweet from creatorIds
         const tweets: Tweet[] = await fetchTweetsFromCreators({creatorIds})
-        // const summaries: Summary = await generateSummariesFromTweets({tweets})
         return tweets;
     } catch (error: any) {
         console.log("generateSummariesFromCreators -> error", error)

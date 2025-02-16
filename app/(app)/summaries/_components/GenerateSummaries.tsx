@@ -19,6 +19,7 @@ const GenerateSummaries = ({ onGenerateComplete }: { onGenerateComplete: () => v
     const {user: userInfo} = useUser();
     const [creators, setCreators] = useState<Creator[]>([])
     const [selectedCreators, setSelectedCreators] = useState<Set<string>>(new Set())
+    const [selectCreatorsUserName, setSelectedCreatorsUserName] = useState<Set<string>>(new Set())
     const [creatorsLoading, setCreatorsLoading] = useState<boolean>(true)
     const [mounted, setMounted] = useState(false);
     const [generatingSummaries, setGeneratingSummaries] = useState<boolean>(false)
@@ -40,7 +41,7 @@ const GenerateSummaries = ({ onGenerateComplete }: { onGenerateComplete: () => v
         fetchAllCreators()
     }, [])
 
-    const toggleCreator = (creatorId: string) => {
+    const toggleCreator = (creatorId: string, creatorUsername:string) => {
         setSelectedCreators(prev => {
             const newSet = new Set(prev);
             if (newSet.has(creatorId)) {
@@ -50,28 +51,40 @@ const GenerateSummaries = ({ onGenerateComplete }: { onGenerateComplete: () => v
             }
             return newSet;
         });
+        setSelectedCreatorsUserName(prev => {
+            const newSet = new Set(prev);
+            if (newSet.has(creatorUsername)) {
+                newSet.delete(creatorUsername);
+            } else {
+                newSet.add(creatorUsername);
+            }
+            return newSet;
+        })
     };
 
     const selectAllCreators = () => {
         if (selectedCreators.size === creators.length) {
             // If all are selected, deselect all
             setSelectedCreators(new Set());
+            setSelectedCreatorsUserName(new Set());
         } else {
             // Select all creators
             const allCreatorIds = creators.map(creator => creator.xId);
+            const allCreatorUserNames = creators.map(creator => creator.username)
             setSelectedCreators(new Set(allCreatorIds));
+            setSelectedCreatorsUserName(new Set(allCreatorUserNames))
         }
     };
 
     const generateSummaries = async () => {
         setGeneratingSummaries(true)
         try {
-            const res = await fetch('/api/tools/x/fetchTweetsFromCreators', {
+            const res = await fetch('/api/tools/x/fetchTweetsFromCreatorsv2', {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ creatorIds: Array.from(selectedCreators) })
+                body: JSON.stringify({ creatorUserNames: Array.from(selectCreatorsUserName) })
             });
 
             if (!res.ok) {
@@ -160,7 +173,7 @@ const GenerateSummaries = ({ onGenerateComplete }: { onGenerateComplete: () => v
                                     <CreatorCard
                                         creator={creator}
                                         isSelected={selectedCreators.has(creator.xId)}
-                                        onToggle={() => toggleCreator(creator.xId)}
+                                        onToggle={() => toggleCreator(creator.xId, creator.username)}
                                     />
                                 </div>
                             ))}

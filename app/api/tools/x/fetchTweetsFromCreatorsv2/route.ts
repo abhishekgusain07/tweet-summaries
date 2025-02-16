@@ -2,40 +2,78 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Tweet, UserService } from 'rettiwt-api';
 import { openai } from '@ai-sdk/openai';
 import { generateText } from 'ai';
+import { Rettiwt } from 'rettiwt-api';
 import axios from 'axios';
 
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
-  const { creatorIds } = body;
+  const { creatorUserNames } = body;
 
-  if (!creatorIds || creatorIds.length === 0) {
-    return NextResponse.json({ error: 'Creator ID is required' }, { status: 400 });
+  if (!creatorUserNames || creatorUserNames.length === 0) {
+    return NextResponse.json({ error: 'Creator userNames is required' }, { status: 400 });
   }
 
   try {
-    const userService = new UserService({ apiKey: process.env.TWITTER_KEY! });
+    const rettiwt = new Rettiwt({ apiKey:process.env.TWITTER_KEY });
 
-    const allTweets = await userService.bookmarks();
-    const tweets = allTweets.list;
+    const fetchTodaysTweets = async () => {
+        const allTweets = [];
+        let cursor;
+        const count = 10; // Increased count to reduce API calls
+        const seenTweetIds = new Set(); // Track unique tweets
     
-    // Get today's date components
-    const now = new Date();
-    const currentDay = now.getDate();
-    const currentMonth = now.getMonth();
-    const currentYear = now.getFullYear();
-
-    //filter todays bookmarks
-    const filteredTweets = tweets.filter((tweet: Tweet) => {
-      const tweetDate = new Date(tweet.createdAt);
-      return (
-        creatorIds.includes(tweet.tweetBy.id) &&
-        tweetDate.getDate() === currentDay &&
-        tweetDate.getMonth() === currentMonth &&
-        tweetDate.getFullYear() === currentYear
-      );
-    })
-    console.log("filteredTweets --> ", filteredTweets)
+        // Get today's date at 12:01 AM
+        const today = new Date();
+        today.setHours(0, 1, 0, 0);
+        
+        // Get tomorrow's date at 12:01 AM for end date
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+    
+        do {
+            try {
+                const response = await rettiwt.tweet.search(
+                    {
+                        fromUsers: creatorUserNames,
+                        startDate: today,
+                        endDate: tomorrow, // Add end date to limit the range
+                        replies: false
+                    },
+                    count,
+                    cursor
+                );
+    
+                // Check if response is valid and has tweets
+                if (response?.list?.length === 0) {
+                    break; // Exit if no more tweets
+                }
+    
+                // Process new tweets and avoid duplicates
+                if (response?.list) {
+                    for (const tweet of response.list) {
+                        if (!seenTweetIds.has(tweet.id)) {
+                            seenTweetIds.add(tweet.id);
+                            allTweets.push(tweet);
+                        }
+                    }
+                }
+    
+                // Update cursor for next batch
+                cursor = response?.next?.value || null;
+    
+                // Add delay to respect rate limits
+                await new Promise(resolve => setTimeout(resolve, 1000));
+    
+            } catch (error) {
+                console.error('Error fetching tweets:', error);
+                break;
+            }
+        } while (cursor && allTweets.length < 100); // Add safety limit
+    
+        return allTweets;
+    };
+    const filteredTweets = await fetchTodaysTweets();
     const response = await axios.post(
       'https://api.openai.com/v1/chat/completions',
       {
