@@ -18,7 +18,9 @@ const isProtectedRoute = config.auth.enabled
       "/connect(.*)",
       "/summaries(.*)",
       "/settings(.*)",
-      "/getTweet(.*)",
+      "/search(.*)",
+      "/create(.*)",
+      "/chat(.*)",
     ])
   : () => false;
 

@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
 import { Separator } from "@/components/ui/separator";
 import { getAllConnectedCreators } from "@/utils/data/creator/getAllConnectedCreator";
-import { Loader2 } from "lucide-react";
+import { Loader2, PlusCircle, Sparkles, Users } from "lucide-react";
 import { DataTable } from "./dataTable";
 import { columns } from "./Column";
 import { TabCard } from "@/components/Tabcard";
@@ -60,7 +60,7 @@ const AllCreators = () => {
                                         <CreatorCard key={i} creator={creator} onSuccessFullRemoval={onSuccessFullRemoval}/>
                                     ))
                                 ) : (
-                                    <p className="text-muted-foreground">No creators found <span className="text-black cursor-pointer" onClick={() => {}}>add creators</span></p>
+                                    <NoCreatorsConnectedCard />
                                 )
                             }
                         </div>                        
@@ -71,7 +71,40 @@ const AllCreators = () => {
         </TabCard>
     )
 }
-
+const NoCreatorsConnectedCard = () => {
+    return (
+            <div className="flex flex-col items-center justify-center p-6 border border-dashed rounded-lg dark:border-purple-800/30 bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-950">
+                <div className="relative mb-4">
+                    <Users className="w-12 h-12 text-purple-300 dark:text-purple-600" />
+                    <Sparkles className="w-4 h-4 text-yellow-400 dark:text-yellow-300 absolute -top-1 -right-1 animate-pulse" />
+                </div>
+                
+                <h3 className="text-lg font-medium text-gray-800 dark:text-gray-200 mb-2">No creators found</h3>
+                
+                <p className="text-gray-500 dark:text-gray-400 text-center mb-4">
+                    Start connecting with creators to generate summaries of their tweets
+                </p>
+                
+                <button 
+                    onClick={() => {}}
+                    className="flex items-center space-x-2 px-4 py-2 bg-purple-100 hover:bg-purple-200 dark:bg-purple-900/30 dark:hover:bg-purple-800/40 text-purple-700 dark:text-purple-300 rounded-lg transition-colors"
+                >
+                    <PlusCircle className="w-4 h-4" />
+                    <span>Add creators</span>
+                </button>
+                
+                <div className="mt-4 flex space-x-1">
+                    {[...Array(3)].map((_, i) => (
+                    <div 
+                        key={i} 
+                        className="w-1.5 h-1.5 rounded-full bg-purple-300 dark:bg-purple-700 animate-pulse"
+                        style={{ animationDelay: `${i * 200}ms` }}
+                    />
+                    ))}
+                </div>
+                </div>
+    )
+}
 const CreatorCard = ({creator, onSuccessFullRemoval}: {creator: Creator, onSuccessFullRemoval: (creatorId: string) => void}) => {
     const [isRemoving, setIsRemoving] = useState<boolean>(false);
     const removeCreator = async(creatorId: string) => {

@@ -27,6 +27,7 @@ const config: Config = {
       },
     },
     extend: {
+      
       // Merging backgroundImage from the first file
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
@@ -75,6 +76,13 @@ const config: Config = {
         sm: "calc(var(--radius) - 4px)",
       },
       keyframes: {
+          'spin-slow': {
+          '100%': { transform: 'rotate(360deg)' },
+        },
+        'progress': {
+          '0%': { width: '0%' },
+          '100%': { width: 'var(--progress-width)' },
+        },
         "background-shine": {
           from: {
             backgroundPosition: "0 0",
@@ -144,6 +152,8 @@ const config: Config = {
         orbit: "orbit calc(var(--duration)*1s) linear infinite",
         gradient: "gradient 8s linear infinite",
         shimmer: "shimmer 8s infinite",
+        "spin-slow": "spin-slow 3s linear infinite",
+        progress: 'progress 2s ease-in-out forwards',
         buttonheartbeat: "buttonheartbeat 2s infinite ease-in-out",
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",

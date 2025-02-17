@@ -110,3 +110,15 @@
     @apply bg-background text-foreground;
   }
 }
+
+
+@keyframes spin-slow {
+  to { transform: rotate(360deg); }
+}
+@keyframes progress {
+   0% { width: 0%; }
+   100% { width: var(--progress-width); }
+}
+@keyframes shimmer {
+100% { transform: translateX(100%); }
+}
