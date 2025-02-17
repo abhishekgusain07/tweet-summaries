@@ -22,8 +22,8 @@ const ConnectPage = () => {
   return (
     <div className={`h-screen w-full transition-opacity duration-300 ${mounted ? 'opacity-100' : 'opacity-0'}`}>
       <PageTitle
-        heading="Settings"
-        subHeading="Fine-tune your chatbot's behavior, appearance, and functionality"
+        heading="Connect"
+        subHeading="Connect with creators to generate summaries of their tweets"
       />
 
       <div className="flex flex-col gap-4 p-4 h-[calc(100vh-120px)] max-w-7xl lg:mx-auto lg:grid lg:grid-cols-12">

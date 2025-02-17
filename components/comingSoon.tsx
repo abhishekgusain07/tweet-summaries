@@ -3,9 +3,11 @@ import React from 'react';
 import { Card } from '@/components/ui/card';
 import { Clock, Sparkles, Construction } from 'lucide-react';
 
-const ComingSoon = () => {
+const ComingSoon = ({width}:{
+    width?: string
+}) => {
   const [bounce, setBounce] = React.useState(false);
-
+  const customWidth = width ? width : '70';
   React.useEffect(() => {
     const interval = setInterval(() => {
       setBounce(prev => !prev);
@@ -45,7 +47,7 @@ const ComingSoon = () => {
           <div className="w-full bg-gray-200 rounded-full h-2">
             <div 
               className="bg-purple-500 h-2 rounded-full animate-progress"
-              style={{ width: '70%' }}
+              style={{ width: `${customWidth}%` }}
             />
           </div>
         </div>

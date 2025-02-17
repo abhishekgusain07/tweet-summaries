@@ -1,5 +1,6 @@
+"use client";
 import { BotIcon, Calendar, Home, Inbox, Search, Settings, Wand2 } from "lucide-react"
-
+import { usePathname } from "next/navigation"
 import {
   Sidebar,
   SidebarContent,
@@ -10,8 +11,10 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import ModeToggle from "./mode-toggle"
+import { Separator } from "./ui/separator"
+import { cn } from "@/lib/utils"
 
-// Menu items.
 const items = [
   {
     title: "Connect",
@@ -35,29 +38,43 @@ const items = [
   },
   {
     title: "Search",
-    url: "/getTweet",
+    url: "/search",
     icon: Search,
   },
 ]
 
 export function AppSidebar() {
+  const pathname = usePathname()
+
   return (
     <Sidebar>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Application</SidebarGroupLabel>
+          <SidebarGroupLabel>Dashboard</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <a href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </a>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              {items.map((item) => {
+                const isActive = pathname === item.url
+                return (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton 
+                      asChild
+                      className={cn(
+                        "transition-colors hover:bg-purple-100 hover:text-purple-900 dark:hover:bg-purple-950/90 dark:hover:text-white",
+                        isActive && "bg-purple-100 text-purple-900 dark:bg-purple-950/90 dark:text-white"
+                      )}
+                    >
+                      <a href={item.url} className="flex items-center gap-3">
+                        <item.icon className={cn(
+                          "h-4 w-4",
+                          isActive && "text-purple-900 dark:text-white"
+                        )} />
+                        <span>{item.title}</span>
+                      </a>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                )
+              })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

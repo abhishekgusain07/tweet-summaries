@@ -27,15 +27,15 @@ import {
 import { UserProfile } from "../user-profile";
 
 const components: { title: string; href: string; description: string }[] = [
+  // {
+  //   title: "AI Playground",
+  //   href: "/playground",
+  //   description: "Interact with the AI in the playground.",
+  // },
   {
-    title: "AI Playground",
-    href: "/playground",
-    description: "Interact with the AI in the playground.",
-  },
-  {
-    title: "Dashboard",
-    href: "/dashboard",
-    description: "Access your personal dashboard.",
+    title: "Explore",
+    href: "/connect",
+    description: "Explore the features",
   },
 ];
 
@@ -87,38 +87,6 @@ export default function NavBar() {
                   ))}
                 </div>
 
-                <div className="px-2 py-4 border-t">
-                  <h2 className="text-sm font-medium text-muted-foreground mb-2">
-                    Links
-                  </h2>
-
-                  <Link
-                    href="https://twitter.com/rasmickyy"
-                    target="_blank"
-                    prefetch={true}
-                  >
-                    <Button
-                      variant="ghost"
-                      className="w-full justify-start text-base font-normal h-11 border border-muted/40 mb-2 hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-blue-950/50 dark:hover:text-blue-400 transition-colors"
-                    >
-                      <Twitter className="h-4 w-4 mr-2" />X (Twitter)
-                    </Button>
-                  </Link>
-                  <Link
-                    href="https://youtube.com/@rasmickyy"
-                    target="_blank"
-                    prefetch={true}
-                  >
-                    <Button
-                      variant="ghost"
-                      className="w-full justify-start text-base font-normal h-11 border border-muted/40 hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-blue-950/50 dark:hover:text-blue-400 transition-colors"
-                    >
-                      <Youtube className="h-4 w-4 mr-2" />
-                      YouTube
-                    </Button>
-                  </Link>
-                </div>
-
                 {!userId && config?.auth?.enabled && (
                   <div className="px-2 py-4 border-t mt-auto">
                     <Link href="/sign-in" prefetch={true}>
@@ -133,7 +101,7 @@ export default function NavBar() {
           </Dialog>
           <Link href="/" prefetch={true} className="flex items-center gap-2">
             <Sparkles className="h-5 w-5 text-blue-600" />
-            <span className="font-semibold">Next Starter</span>
+            <span className="font-semibold">Tweet Digest</span>
           </Link>
         </div>
 
@@ -147,40 +115,9 @@ export default function NavBar() {
 
         {/* Desktop Navigation */}
         <div className="hidden lg:flex items-center gap-6">
-          <NavigationMenu>
-            <NavigationMenuList>
-              <NavigationMenuItem>
-                <NavigationMenuTrigger>Resources</NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
-                    {components.map((component) => (
-                      <ListItem
-                        key={component.title}
-                        title={component.title}
-                        href={component.href}
-                      >
-                        {component.description}
-                      </ListItem>
-                    ))}
-                  </ul>
-                </NavigationMenuContent>
-              </NavigationMenuItem>
-            </NavigationMenuList>
-          </NavigationMenu>
 
-          <Link href="/dashboard" prefetch={true}>
-            <Button variant="ghost">Dashboard</Button>
-          </Link>
-          <Link href="/playground" prefetch={true}>
-            <Button variant="ghost">AI Playground</Button>
-          </Link>
-          <Link
-            href="https://github.com/michaelshimeles/nextjs14-starter-template"
-            prefetch={true}
-          >
-            <Button variant="ghost" size="icon">
-              <Github className="h-5 w-5" />
-            </Button>
+          <Link href="/connect" prefetch={true}>
+            <Button variant="ghost">Explore</Button>
           </Link>
         </div>
 

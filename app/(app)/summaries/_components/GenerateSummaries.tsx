@@ -118,10 +118,10 @@ const GenerateSummaries = ({ onGenerateComplete }: { onGenerateComplete: () => v
                     <CreatorsListPreview />
                 ) : creators.length === 0 ? (
                     <Alert>
-                        <div className="flex flex-col space-y-4">
+                        <div className="flex flex-col space-y-4 dark:text-zinc-300">
                             <h3 className="font-medium">No creators connected yet</h3>
                             <p>Connect with creators to generate summaries of their tweets</p>
-                            <Button onClick={() => router.push('/connect')} variant="outline">
+                            <Button onClick={() => router.push('/connect')} variant="outline" className="dark:border-zinc-700 dark:hover:border-zinc-600">
                                 <PlusIcon className="mr-2 h-4 w-4" />
                                 Connect Creators
                             </Button>
@@ -129,7 +129,7 @@ const GenerateSummaries = ({ onGenerateComplete }: { onGenerateComplete: () => v
                     </Alert>
                 ) : (
                     <div className="space-y-6">
-                        <div className="w-full flex justify-end gap-2">
+                        <div className="w-full flex justify-end gap-2 mt-3">
                             <Button
                                 variant="outline"
                                 size="sm"

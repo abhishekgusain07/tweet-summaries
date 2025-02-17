@@ -161,71 +161,71 @@ const AddNewCreators = () => {
                 subHeading="Search and connect with creators"
             >
                 <div className="flex flex-col gap-4 p-4">
-                    <div className="flex gap-2">
-                        <div className="relative flex-1 items-center justify-start">
-                            <Input
-                                type="text"
-                                placeholder="Search creators by username"
-                                value={searchTerm}
-                                onChange={handleSearchChange}
-                                className="pl-10"
-                            />
-                            <Search className="absolute left-3 top-3.5 h-5 w-5 text-muted-foreground" />
-                        </div>
+                <div className="flex gap-2">
+                    <div className="relative flex-1 items-center justify-start">
+                        <Input
+                            type="text"
+                            placeholder="Search creators by username"
+                            value={searchTerm}
+                            onChange={handleSearchChange}
+                            className="pl-10 dark:bg-[#222] dark:border-[#333] dark:text-white dark:placeholder:text-gray-400"
+                        />
+                        <Search className="absolute left-3 top-3.5 h-5 w-5 text-muted-foreground dark:text-gray-400" />
                     </div>
-
-                    {isLoading && (
-                        <div className="flex items-center justify-center py-8">
-                            <Loader2 className="h-6 w-6 animate-spin" />
-                        </div>
-                    )}
-
-                    {error && (
-                        <div className="text-red-500 text-sm">{error}</div>
-                    )}
-
-                    {user && !isLoading && (
-                        <div className="flex items-center justify-between p-4 border rounded-lg">
-                            <div className="flex items-center gap-3">
-                                <Avatar>
-                                    <AvatarImage src={user.profileImage} />
-                                    <AvatarFallback>
-                                        <Users2 className="h-6 w-6" />
-                                    </AvatarFallback>
-                                </Avatar>
-                                <div>
-                                    <p className="font-medium">{user.fullName}</p>
-                                    <p className="text-sm text-muted-foreground">@{user.userName}</p>
-                                </div>
-                            </div>
-
-                            <Button
-                                variant={isCreatorConnected ? "outline" : "default"}
-                                size="sm"
-                                className="flex items-center gap-2"
-                                onClick={handleConnect}
-                                disabled={isCreatorConnected || connectingUserToCreator}
-                            >
-                                {connectingUserToCreator ? (
-                                    <>
-                                        <Loader2 className="h-4 w-4 animate-spin" />
-                                        Connecting...
-                                    </>
-                                ) : isCreatorConnected ? (
-                                    <>
-                                        <CheckIcon className="h-4 w-4" />
-                                        Connected
-                                    </>
-                                ) : (
-                                    <>
-                                        <PlusIcon className="h-4 w-4" />
-                                        Connect
-                                    </>
-                                )}
-                            </Button>
-                        </div>
-                    )}
                 </div>
+
+                {isLoading && (
+                    <div className="flex items-center justify-center py-8">
+                        <Loader2 className="h-6 w-6 animate-spin dark:text-gray-300" />
+                    </div>
+                )}
+
+                {error && (
+                    <div className="text-red-500 text-sm">{error}</div>
+                )}
+
+                {user && !isLoading && (
+                    <div className="flex items-center justify-between p-4 border rounded-lg dark:border-[#333] dark:bg-[#222]">
+                        <div className="flex items-center gap-3">
+                            <Avatar>
+                                <AvatarImage src={user.profileImage} />
+                                <AvatarFallback className="dark:bg-[#333]">
+                                    <Users2 className="h-6 w-6 dark:text-gray-300" />
+                                </AvatarFallback>
+                            </Avatar>
+                            <div>
+                                <p className="font-medium dark:text-white">{user.fullName}</p>
+                                <p className="text-sm text-muted-foreground dark:text-gray-400">@{user.userName}</p>
+                            </div>
+                        </div>
+
+                        <Button
+                            variant={isCreatorConnected ? "outline" : "default"}
+                            size="sm"
+                            className={`flex items-center gap-2 ${isCreatorConnected ? 'dark:border-[#444] dark:text-gray-300 dark:hover:bg-[#333]' : 'dark:bg-[#333] dark:text-white dark:hover:bg-[#444]'}`}
+                            onClick={handleConnect}
+                            disabled={isCreatorConnected || connectingUserToCreator}
+                        >
+                            {connectingUserToCreator ? (
+                                <>
+                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                    Connecting...
+                                </>
+                            ) : isCreatorConnected ? (
+                                <>
+                                    <CheckIcon className="h-4 w-4" />
+                                    Connected
+                                </>
+                            ) : (
+                                <>
+                                    <PlusIcon className="h-4 w-4" />
+                                    Connect
+                                </>
+                            )}
+                        </Button>
+                    </div>
+                )}
+            </div>
             </TabCard>
         </div>
     );

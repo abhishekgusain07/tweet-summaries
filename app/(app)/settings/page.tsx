@@ -1,7 +1,7 @@
 import ComingSoon from "@/components/comingSoon";
 
 const Settings = () => {
-    return <ComingSoon/ >
+    return <ComingSoon width="80" />
     return (
         <div>
             Settings

@@ -25,8 +25,8 @@ export function SidebarNav({ className, items, ...props }: SidebarNavProps) {
           className={cn(
             "flex h-10 md:h-11 px-3 whitespace-nowrap rounded-lg space-x-2 items-center outline-1 justify-start",
             item.active
-              ? "bg-purple-50 hover:outline outline-purple-400 font-semibold text-purple-600"
-              : "hover:bg-zinc-50 hover:outline font-medium outline-zinc-300"
+              ? "bg-purple-50 dark:bg-purple-950/50 hover:outline outline-purple-400 dark:outline-purple-500 font-semibold text-purple-600 dark:text-purple-400"
+              : "hover:bg-zinc-50 dark:hover:bg-zinc-800 hover:outline font-medium outline-zinc-300 dark:outline-zinc-600 dark:text-zinc-300"
           )}
         >
           {item.icon}

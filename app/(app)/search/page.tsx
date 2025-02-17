@@ -64,7 +64,7 @@ const GetTweet = () => {
     //         setIsLoading(false)
     //     }
     // }
-    return <ComingSoon />
+    return <ComingSoon  width='50'/>
     // return (
     //     <div className='flex flex-col items-center justify-center gap-2 h-screen w-screen'>
     //         <h1 className='text-3xl font-semibold tracking-tight'>Get Tweet</h1>
