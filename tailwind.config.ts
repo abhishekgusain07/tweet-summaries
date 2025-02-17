@@ -79,6 +79,16 @@ const config: Config = {
           'spin-slow': {
           '100%': { transform: 'rotate(360deg)' },
         },
+        'bounce-v2': {
+          '0%, 100%': {
+            transform: 'translateY(-25%)',
+            animationTimingFunction: 'cubic-bezier(0.8, 0, 1, 1)',
+          },
+          '50%': {
+            transform: 'none',
+            animationTimingFunction: 'cubic-bezier(0, 0, 0.2, 1)',
+          },
+        },
         'progress': {
           '0%': { width: '0%' },
           '100%': { width: 'var(--progress-width)' },
@@ -148,6 +158,7 @@ const config: Config = {
         },
       },
       animation: {
+        'bounce-v2': 'bounce-v2 2s infinite',
         "logo-cloud": "logo-cloud 30s linear infinite", // Adjust duration and timing as needed for your design.
         orbit: "orbit calc(var(--duration)*1s) linear infinite",
         gradient: "gradient 8s linear infinite",

@@ -22,7 +22,7 @@ const ComingSoon = ({width}:{
       <Card className="max-w-md w-full p-8 text-center space-y-6 bg-gradient-to-b from-pink-50 to-purple-50 dark:from-gray-900 dark:to-purple-950 dark:border-purple-800/30">
         <div className="relative">
           <Construction 
-            className={`w-16 h-16 mx-auto text-purple-500 dark:text-purple-400 ${bounce ? 'animate-bounce' : ''}`}
+            className={`w-16 h-16 mx-auto text-purple-500 dark:text-purple-400 ${bounce ? 'animate-float' : ''}`}
           />
           <Sparkles 
             className="w-6 h-6 text-yellow-400 dark:text-yellow-300 absolute -top-2 -right-2 animate-pulse"

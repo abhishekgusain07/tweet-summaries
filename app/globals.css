@@ -112,6 +112,41 @@
 }
 
 
+@keyframes bounce-v2 {
+  0% {
+    transform: translateY(0);
+    animation-timing-function: cubic-bezier(0.2, 0, 0.4, 1);
+  }
+  50% {
+    transform: translateY(-20px);
+    animation-timing-function: cubic-bezier(0.4, 0, 0.6, 1);
+  }
+  100% {
+    transform: translateY(0);
+    animation-timing-function: cubic-bezier(0.2, 0, 0.4, 1);
+  }
+}
+
+.animate-bounce-v2 {
+  animation: bounce-v2 1.5s ease-in-out infinite;
+  animation-delay: 0s; /* Ensures it starts immediately */
+}
+@keyframes float {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.animate-float {
+  animation: float 1s ease-in-out infinite;
+  will-change: transform;
+}
 @keyframes spin-slow {
   to { transform: rotate(360deg); }
 }
