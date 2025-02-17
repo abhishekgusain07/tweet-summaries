@@ -162,7 +162,7 @@ const AddNewCreators = () => {
             >
                 <div className="flex flex-col gap-4 p-4">
                     <div className="flex gap-2">
-                        <div className="relative flex-1">
+                        <div className="relative flex-1 items-center justify-start">
                             <Input
                                 type="text"
                                 placeholder="Search creators by username"
@@ -170,7 +170,7 @@ const AddNewCreators = () => {
                                 onChange={handleSearchChange}
                                 className="pl-10"
                             />
-                            <Search className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+                            <Search className="absolute left-3 top-3.5 h-5 w-5 text-muted-foreground" />
                         </div>
                     </div>
 
