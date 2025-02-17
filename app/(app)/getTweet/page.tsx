@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
 import Image from 'next/image';
+import ComingSoon from '@/components/comingSoon';
 
 function extractTweetId(input: string): string {
     // Step 1: Check if the input is a valid URL
@@ -37,67 +38,68 @@ function extractTweetId(input: string): string {
     return tweetId;
   }
 const GetTweet = () => {
-    const [url, setUrl] = useState<string>("");
-    const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [tweet, setTweet] = useState<any>(null);
-    const [userImage, setUserImage] = useState<string>("");
-    const [error, setError] = useState<string>("");
-    const handleGetTweet = async (e: any) => {
-        setIsLoading(true)
-        e.preventDefault();
-        try {
-            const tweetId = extractTweetId(url);
-            const response = await fetch('/api/tools/x/searchTweet', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ tweetId }),
-            });
-            const data = await response.json();
-            setTweet(data);
-            setUserImage(data.tweetBy.profileImage)
-        } catch (error: any) {
-            setError(error.message)
-        }finally {
-            setIsLoading(false)
-        }
-    }
-    return (
-        <div className='flex flex-col items-center justify-center gap-2 h-screen w-screen'>
-            <h1 className='text-3xl font-semibold tracking-tight'>Get Tweet</h1>
-            <div className='flex items-center justify-center gap-2'>
-                <Input placeholder='Enter Post Url' value={url} onChange={(e) => setUrl(e.target.value)} />
-                <Button 
-                    variant="default" 
-                    onClick={(e) => {handleGetTweet(e)}} 
-                    disabled={isLoading}
-                >
-                    {
-                        isLoading ? <Loader2 className='animate-spin' /> : "Get Tweet"
-                    }
-                </Button>
-            </div>
-            {
-                isLoading ? <Loader2 className='animate-spin' /> :
-                error ? <p className='text-red-500'>{error}</p> :
-                tweet ? <div className='flex flex-col items-center justify-center gap-2'>
-                    <div className='flex items-center justify-center gap-2'>
-                        <Image src={userImage} alt='user' width={50} height={50} />
-                        <p>{tweet.tweetBy.name}</p>
-                    </div>
-                    <p>{tweet.fullText}</p>
-                    {
-                        tweet.media ? tweet.media.map((media: any) => {
-                            if(media.type === 'photo') return (
-                                <Image src={media.url} alt='media' width={400} height={400} key={media.url} />
-                            )
-                        }) : null
-                    }
-                </div> : null
-            }
-        </div>
-    );
+    // const [url, setUrl] = useState<string>("");
+    // const [isLoading, setIsLoading] = useState<boolean>(false);
+    // const [tweet, setTweet] = useState<any>(null);
+    // const [userImage, setUserImage] = useState<string>("");
+    // const [error, setError] = useState<string>("");
+    // const handleGetTweet = async (e: any) => {
+    //     setIsLoading(true)
+    //     e.preventDefault();
+    //     try {
+    //         const tweetId = extractTweetId(url);
+    //         const response = await fetch('/api/tools/x/searchTweet', {
+    //         method: 'POST',
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //         },
+    //         body: JSON.stringify({ tweetId }),
+    //         });
+    //         const data = await response.json();
+    //         setTweet(data);
+    //         setUserImage(data.tweetBy.profileImage)
+    //     } catch (error: any) {
+    //         setError(error.message)
+    //     }finally {
+    //         setIsLoading(false)
+    //     }
+    // }
+    return <ComingSoon />
+    // return (
+    //     <div className='flex flex-col items-center justify-center gap-2 h-screen w-screen'>
+    //         <h1 className='text-3xl font-semibold tracking-tight'>Get Tweet</h1>
+    //         <div className='flex items-center justify-center gap-2'>
+    //             <Input placeholder='Enter Post Url' value={url} onChange={(e) => setUrl(e.target.value)} />
+    //             <Button 
+    //                 variant="default" 
+    //                 onClick={(e) => {handleGetTweet(e)}} 
+    //                 disabled={isLoading}
+    //             >
+    //                 {
+    //                     isLoading ? <Loader2 className='animate-spin' /> : "Get Tweet"
+    //                 }
+    //             </Button>
+    //         </div>
+    //         {
+    //             isLoading ? <Loader2 className='animate-spin' /> :
+    //             error ? <p className='text-red-500'>{error}</p> :
+    //             tweet ? <div className='flex flex-col items-center justify-center gap-2'>
+    //                 <div className='flex items-center justify-center gap-2'>
+    //                     <Image src={userImage} alt='user' width={50} height={50} />
+    //                     <p>{tweet.tweetBy.name}</p>
+    //                 </div>
+    //                 <p>{tweet.fullText}</p>
+    //                 {
+    //                     tweet.media ? tweet.media.map((media: any) => {
+    //                         if(media.type === 'photo') return (
+    //                             <Image src={media.url} alt='media' width={400} height={400} key={media.url} />
+    //                         )
+    //                     }) : null
+    //                 }
+    //             </div> : null
+    //         }
+    //     </div>
+    // );
 };
 
 export default GetTweet;

@@ -1,4 +1,7 @@
+import ComingSoon from "@/components/comingSoon";
+
 const CreatePage = () => {
+    return <ComingSoon />
     return (
         <div className="h-screen w-full grid grid-cols-2">
             <div>

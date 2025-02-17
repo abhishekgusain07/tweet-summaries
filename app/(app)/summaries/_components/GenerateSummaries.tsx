@@ -205,7 +205,7 @@ const CreatorCard = ({
                 <div className="flex items-start justify-between">
                     <div className="flex items-center space-x-3">
                         <Avatar>
-                            <AvatarImage src={creator.profileImageUrl!} />
+                            <AvatarImage src={creator.profileImageUrl!} className="hover:scale-110"/>
                             <AvatarFallback>
                                 <Users2 className="h-6 w-6" />
                             </AvatarFallback>

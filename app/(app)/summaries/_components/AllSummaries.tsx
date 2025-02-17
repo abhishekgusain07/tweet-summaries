@@ -15,6 +15,11 @@ import {
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { formatDistanceToNow } from "date-fns";
 import { Carousel } from "@/components/acertnityCarousel";
+import { GlowingEffect } from "@/components/glowingEffect";
+import { getCreatorsProfileImageAndProfileUrl } from "@/utils/data/creator/getCreatorProfileImage";
+import { set } from "lodash";
+import SummaryCardSkeleton from "@/components/summaryCardSkeleton";
+import { AvatarCircles } from "@/components/avatarCircles";
 
 const AllSummaries = () => {
     const [isMounted, setisMounted] = useState(false)
@@ -129,12 +134,46 @@ const SummaryContent = ({ content }: { content: string }) => {
 
 const SummaryCard = ({ summary }: { summary: Summary }) => {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-
+    const [creatorImages, setCreatorImages] = useState<{
+        imageUrl: string;
+        profileUrl: string;
+    }[]>([]);
+    const [fetchingImagesUrl, setFetchingImagesUrl] = useState<boolean>(false);
+    useEffect(() => {
+        const fetchCreatorImages = async () => {
+            try {
+                setFetchingImagesUrl(true)
+                const images = await Promise.all(summary.creatorIds.map(async (creatorId) => {
+                    const creator:{
+                        imageUrl: string;
+                        profileUrl: string;
+                    } = await getCreatorsProfileImageAndProfileUrl({ creatorId });
+                    return {
+                        imageUrl: creator.imageUrl  === '' ? './images/avatar.png' : creator.imageUrl,
+                        profileUrl: creator.profileUrl
+                    };
+                }));
+                setCreatorImages(images);
+            } catch (error) {
+                console.log("fetchCreatorImages -> error", error)
+            }finally {
+                setFetchingImagesUrl(false)
+            }
+        };
+        fetchCreatorImages();
+    },[summary.creatorIds]);
+    if(fetchingImagesUrl) {
+        return (
+            <SummaryCardSkeleton />
+        )
+    }
     return (
         <>
             <Card className="h-full hover:shadow-md transition-all cursor-pointer" onClick={() => setIsDialogOpen(true)}>
                 <CardHeader>
-                    <CardTitle className="text-lg line-clamp-1">Summary #{summary.id.slice(-4)}</CardTitle>
+                    <CardTitle className="text-lg line-clamp-1">
+                        <AvatarCircles numPeople={0} avatarUrls={creatorImages}/> 
+                    </CardTitle>
                     <CardDescription>
                         Created {summary.createdTime ? formatDistanceToNow(new Date(summary.createdTime), { addSuffix: true }) : 'Unknown time'}
                     </CardDescription>

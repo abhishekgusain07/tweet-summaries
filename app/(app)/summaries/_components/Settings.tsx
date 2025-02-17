@@ -1,5 +1,6 @@
 "use client";
 
+import ComingSoon from "@/components/comingSoon";
 import { TabCard } from "@/components/Tabcard";
 import { ToggleField } from "@/components/ToggleField";
 import { Button } from "@/components/ui/button";
@@ -64,66 +65,66 @@ const Settings = () => {
             </TabCard>
         );
     }
-
-    return (
-        <TabCard 
-            heading="Decide the Frequency of summary to your email" 
-            subHeading="Choose how often you want to receive summaries"
-        >
-            <div className="flex flex-col w-full max-w-2xl mx-auto px-4 py-6 sm:px-6 sm:py-8 gap-3">
-                {error ? (
-                    <div className="text-red-500 text-center">{error}</div>
-                ) : (
-                    <>
-                    <ToggleField
-                        title="Receive Summary Updates on Email"
-                        initialOpen={userSummarySettings?.hasConsented ?? false}
-                        blockToggleState={false}
-                        setUpgradeOpen={() => {}}
-                        onToggle={() => {
-                            if (userSummarySettings) {
-                                setUserSummarySettings({
-                                    ...userSummarySettings,
-                                    hasConsented: !userSummarySettings.hasConsented,
-                                });
-                            }
-                        }}
-                    />
-                    {
-                        userSummarySettings?.hasConsented && (
-                            <Input 
-                                label="Frequency (in days)"
-                                type="number"
-                                value={userSummarySettings?.frequency}
-                                onChange={(e) => {
-                                    setUserSummarySettings({
-                                        ...userSummarySettings,
-                                        frequency: +e.target.value,
-                                    })
-                                }} 
-                                placeholder="Enter frequency (in days)" 
-                            />
-                        )
-                    }
-                    </>
-                )}
-            </div>
-            <div className="flex items-center justify-end w-full px-4 py-6 sm:px-6 sm:py-8 gap-3">
-                <Button
-                    variant="default"
-                    className=""
-                    onClick={handleSave}
-                    disabled={saving}
-                >
-                    {
-                        saving ? "Saving..." : "Save"
-                    }
-                    {
-                        saving && <Loader2 className="ml-2 size-4 animate-spin" />
-                    }
-                </Button>
-            </div>
-        </TabCard>
-    )
+    return <ComingSoon />
+    // return (
+    //     <TabCard 
+    //         heading="Decide the Frequency of summary to your email" 
+    //         subHeading="Choose how often you want to receive summaries"
+    //     >
+    //         <div className="flex flex-col w-full max-w-2xl mx-auto px-4 py-6 sm:px-6 sm:py-8 gap-3">
+    //             {error ? (
+    //                 <div className="text-red-500 text-center">{error}</div>
+    //             ) : (
+    //                 <>
+    //                 <ToggleField
+    //                     title="Receive Summary Updates on Email"
+    //                     initialOpen={userSummarySettings?.hasConsented ?? false}
+    //                     blockToggleState={false}
+    //                     setUpgradeOpen={() => {}}
+    //                     onToggle={() => {
+    //                         if (userSummarySettings) {
+    //                             setUserSummarySettings({
+    //                                 ...userSummarySettings,
+    //                                 hasConsented: !userSummarySettings.hasConsented,
+    //                             });
+    //                         }
+    //                     }}
+    //                 />
+    //                 {
+    //                     userSummarySettings?.hasConsented && (
+    //                         <Input 
+    //                             label="Frequency (in days)"
+    //                             type="number"
+    //                             value={userSummarySettings?.frequency}
+    //                             onChange={(e) => {
+    //                                 setUserSummarySettings({
+    //                                     ...userSummarySettings,
+    //                                     frequency: +e.target.value,
+    //                                 })
+    //                             }} 
+    //                             placeholder="Enter frequency (in days)" 
+    //                         />
+    //                     )
+    //                 }
+    //                 </>
+    //             )}
+    //         </div>
+    //         <div className="flex items-center justify-end w-full px-4 py-6 sm:px-6 sm:py-8 gap-3">
+    //             <Button
+    //                 variant="default"
+    //                 className=""
+    //                 onClick={handleSave}
+    //                 disabled={saving}
+    //             >
+    //                 {
+    //                     saving ? "Saving..." : "Save"
+    //                 }
+    //                 {
+    //                     saving && <Loader2 className="ml-2 size-4 animate-spin" />
+    //                 }
+    //             </Button>
+    //         </div>
+    //     </TabCard>
+    // )
 }
 export default Settings;
