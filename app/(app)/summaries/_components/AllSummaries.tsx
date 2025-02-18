@@ -132,6 +132,7 @@ const SummaryContent = ({ content }: { content: string }) => {
     }
 };
 
+// Modified SummaryCard to show condensed content in the card
 const SummaryCard = ({ summary }: { summary: Summary }) => {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [creatorImages, setCreatorImages] = useState<{
@@ -139,6 +140,19 @@ const SummaryCard = ({ summary }: { summary: Summary }) => {
         profileUrl: string;
     }[]>([]);
     const [fetchingImagesUrl, setFetchingImagesUrl] = useState<boolean>(false);
+    
+    // Parse the content once to get a preview
+    const getContentPreview = () => {
+        try {
+            const parsedContent = JSON.parse(summary.content);
+            // Return just the text content, truncated if needed
+            return parsedContent.content || "No content available";
+        } catch (error) {
+            // Fallback for non-JSON content
+            return summary.content;
+        }
+    };
+    
     useEffect(() => {
         const fetchCreatorImages = async () => {
             try {
@@ -162,11 +176,11 @@ const SummaryCard = ({ summary }: { summary: Summary }) => {
         };
         fetchCreatorImages();
     },[summary.creatorIds]);
+    
     if(fetchingImagesUrl) {
-        return (
-            <SummaryCardSkeleton />
-        )
+        return <SummaryCardSkeleton />
     }
+    
     return (
         <>
             <Card className="h-full hover:shadow-md transition-all cursor-pointer" onClick={() => setIsDialogOpen(true)}>
@@ -179,8 +193,8 @@ const SummaryCard = ({ summary }: { summary: Summary }) => {
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <div className="line-clamp-4">
-                        <SummaryContent content={summary.content} />
+                    <div className="line-clamp-3">
+                        <p className="text-sm text-muted-foreground">{getContentPreview()}</p>
                     </div>
                 </CardContent>
                 <CardFooter className="text-xs text-muted-foreground">
