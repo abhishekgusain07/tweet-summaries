@@ -7,32 +7,31 @@ import { GeistSans } from "geist/font/sans";
 import type { Metadata } from "next";
 import "./globals.css";
 
-export const metadata: Metadata = {
-  metadataBase: new URL("https://nextstarter.xyz/"),
+export const metadata = {
+  metadataBase: new URL("https://tweetdigest.vercel.app/"),
   title: {
-    default: 'Next Starter',
-    template: `%s | Next Starter`
+    default: 'TweetDigest',
+    template: `%s | TweetDigest`
   },
   description:
-    "The Ultimate Nextjs 15 Starter Kit for quickly building your SaaS, giving you time to focus on what really matters",
+    "Connect with your favorite creators from X and get daily summaries of their tweets",
   openGraph: {
     description:
-      "The Ultimate Nextjs 15 Starter Kit for quickly building your SaaS, giving you time to focus on what really matters",
+      "Connect with your favorite creators from X and get daily summaries of their tweets",
     images: [
-      "https://dwdwn8b5ye.ufs.sh/f/MD2AM9SEY8GucGJl7b5qyE7FjNDKYduLOG2QHWh3f5RgSi0c",
+      "https://li9sqc5e6d.ufs.sh/f/PU27fyKZHOv1BDsJI1zuLAlPMqZ6go31OeYjtp5z7xFNXUKr", // You should update this with your actual OG image URL
     ],
-    url: "https://nextstarter.xyz/",
+    url: "https://tweetdigest.vercel.app/",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Nextjs Starter Kit",
+    title: "TweetDigest",
     description:
-      "The Ultimate Nextjs 15 Starter Kit for quickly building your SaaS, giving you time to focus on what really matters",
-    siteId: "",
-    creator: "@rasmickyy",
+      "Connect with your favorite creators from X and get daily summaries of their tweets",
+    creator: "@AGusainBuilds",
     creatorId: "",
     images: [
-      "https://dwdwn8b5ye.ufs.sh/f/MD2AM9SEY8GucGJl7b5qyE7FjNDKYduLOG2QHWh3f5RgSi0c",
+      "https://li9sqc5e6d.ufs.sh/f/PU27fyKZHOv1BDsJI1zuLAlPMqZ6go31OeYjtp5z7xFNXUKr", 
     ],
   },
 };
