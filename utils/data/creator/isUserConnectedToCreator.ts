@@ -19,9 +19,9 @@ export const isUserConnectedToCreator = async ({
     if(!clerkUserId) {
       throw new Error("Unauthorized");
     }
-    const user:User | null = await getUserFromClerkId({userId: clerkUserId});
+    const userData:User | null = await getUserFromClerkId({userId: clerkUserId});
 
-    if(!user) {
+    if(!userData) {
       throw new Error("User not found");
     }
     const result:UserCreator[] | null = await db
@@ -29,20 +29,20 @@ export const isUserConnectedToCreator = async ({
     .from(userCreators)
     .where(
         and(
-          eq(userCreators.userId, user.id), // Match the user ID
+          eq(userCreators.userId, userData.id), // Match the user ID
           eq(userCreators.creatorId, creatorId) // Match the creator ID
         )
       )
     .execute(); 
-    if(result) {
+    if(result.length == 0) {
       return {
-        id: result[0]?.id,
-        connected: true
+        id: null,
+        connected: false
       }
     }
     return {
-      id: null,
-      connected: false
+      id: result[0]?.id,
+      connected: true
     }
   } catch (error: any) {
     throw error;
