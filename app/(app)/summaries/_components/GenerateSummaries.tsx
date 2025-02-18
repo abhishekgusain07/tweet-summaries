@@ -128,7 +128,7 @@ const GenerateSummaries = ({ onGenerateComplete }: { onGenerateComplete: () => v
                         </div>
                     </Alert>
                 ) : (
-                    <div className="space-y-6">
+                    <div className="space-y-6 m-3">
                         <div className="w-full flex justify-end gap-2 mt-3">
                             <Button
                                 variant="outline"

@@ -65,18 +65,6 @@ export function UserProfile() {
                             <span>Profile</span>
                         </DropdownMenuItem>
                     </Link>
-                    <Link href="/dashboard/settings">
-                        <DropdownMenuItem className="focus:bg-blue-50 dark:focus:bg-blue-950">
-                            <Settings className="mr-2 h-4 w-4" />
-                            <span>Settings</span>
-                        </DropdownMenuItem>
-                    </Link>
-                    <Link href="/#pricing">
-                        <DropdownMenuItem className="focus:bg-blue-50 dark:focus:bg-blue-950">
-                            <Sparkles className="mr-2 h-4 w-4" />
-                            <span>Upgrade Plan</span>
-                        </DropdownMenuItem>
-                    </Link>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
                 <SignOutButton>
