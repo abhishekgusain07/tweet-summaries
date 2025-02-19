@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const userService = new UserService({ apiKey: process.env.TWITTER_KEY! });
+    const userService = new UserService({ apiKey: process.env.TWITTER_KEY_BOOKMARK! });
 
     const allTweets = await userService.bookmarks();
     const tweets = allTweets.list;
@@ -29,7 +29,6 @@ export async function POST(request: NextRequest) {
     const filteredTweets = tweets.filter((tweet: Tweet) => {
       const tweetDate = new Date(tweet.createdAt);
       return (
-        creatorIds.includes(tweet.tweetBy.id) &&
         tweetDate.getDate() === currentDay &&
         tweetDate.getMonth() === currentMonth &&
         tweetDate.getFullYear() === currentYear
