@@ -1,5 +1,5 @@
 "use client";
-import { BotIcon, Calendar, Home, Inbox, Search, Settings, Wand2 } from "lucide-react"
+import { Bookmark, BotIcon, Calendar, Home, Inbox, Search, Settings, Wand2 } from "lucide-react"
 import { usePathname } from "next/navigation"
 import {
   Sidebar,
@@ -41,6 +41,11 @@ const items = [
     url: "/search",
     icon: Search,
   },
+  {
+    title: "BookMarks",
+    url: "/bookmarks",
+    icon: Bookmark,
+  }
 ]
 
 export function AppSidebar() {
