@@ -6,13 +6,6 @@ import axios from 'axios';
 
 
 export async function POST(request: NextRequest){
-  const body = await request.json();
-  const { creatorIds } = body;
-
-  if (!creatorIds || creatorIds.length === 0) {
-    return NextResponse.json({ error: 'Creator ID is required' }, { status: 400 });
-  }
-
   try {
     const userService = new UserService({ apiKey: process.env.TWITTER_KEY_BOOKMARK! });
 
@@ -79,7 +72,6 @@ export async function POST(request: NextRequest){
       }
     );
     return NextResponse.json({
-      tweetIds: filteredTweets.map((tweet: Tweet) => tweet.id),
       summary: response.data.choices[0].message.content 
     });
   } catch (error) {
