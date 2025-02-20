@@ -5,7 +5,7 @@ import { generateText } from 'ai';
 import axios from 'axios';
 
 
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest){
   const body = await request.json();
   const { creatorIds } = body;
 
