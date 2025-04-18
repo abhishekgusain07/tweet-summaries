@@ -32,7 +32,7 @@ export function NavbarDemo({
   const navItems = [
     {
       name: "Explore",
-      link: "#connect",
+      link: "/connect",
     },
   ];
 
