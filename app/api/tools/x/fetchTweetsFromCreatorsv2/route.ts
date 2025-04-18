@@ -1,10 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Tweet, UserService } from 'rettiwt-api';
-import { openai } from '@ai-sdk/openai';
-import { generateText } from 'ai';
 import { Rettiwt } from 'rettiwt-api';
-import axios from 'axios';
-
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
@@ -14,8 +11,14 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Creator userNames is required' }, { status: 400 });
   }
 
+  // Check if API key is available
+  const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
+  if (!apiKey) {
+    return NextResponse.json({ error: 'Google Generative AI API key is missing' }, { status: 500 });
+  }
+
   try {
-    const rettiwt = new Rettiwt({ apiKey:process.env.TWITTER_KEY });
+    const rettiwt = new Rettiwt({ apiKey: process.env.TWITTER_KEY });
 
     const fetchTodaysTweets = async () => {
         const allTweets = [];
@@ -73,53 +76,56 @@ export async function POST(request: NextRequest) {
     
         return allTweets;
     };
+    
     const filteredTweets = await fetchTodaysTweets();
-    const response = await axios.post(
-      'https://api.openai.com/v1/chat/completions',
-      {
-        model: 'gpt-4o-mini',
-        messages: [
-          {
-            "role": "system",
-            "content": `You are a professional content analyzer. Process tweets and return a JSON object with: 1) 'content' as a concise summary text, 2) 'images' array of image URLs, 3) 'urls' array of all mentioned links (excluding images), and 4) 'profiles' array of Twitter profile URLs. Follow these rules:
-            - Content should be a single paragraph combining key insights
-            - Never include URLs in the content text
-            - Extract all media URLs to images array
-            - Extract profile links to profiles array
-            - All other links go to urls array
-            - Use only plain text, no markdown
-            - Maintain chronological order of discussions
-            - Highlight controversial opinions
-            - Output ONLY valid JSON`
-          },
-          {
-            role: 'user',
-            content: `Please analyze and summarize the following tweets. Each tweet object contains:
-            - fullText: The main content of the tweet
-            - media: Any attached media (images, videos)
-            - urls: Any URLs mentioned in the tweet
-            - quotedTweet: Any tweets that were quoted
-            - replyTo: Information about tweets this is replying to
+    
+    // Initialize Google Generative AI with API key
+    const genAI = new GoogleGenerativeAI(apiKey);
+    
+    // Get the generative model (Gemini 1.5)
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    
+    // Prepare the prompt for Gemini
+    const systemPrompt = `You are a professional content analyzer. Process tweets and return a JSON object with: 1) 'content' as a concise summary text, 2) 'images' array of image URLs, 3) 'urls' array of all mentioned links (excluding images), and 4) 'profiles' array of Twitter profile URLs. Follow these rules:
+      - Content should be a single paragraph combining key insights
+      - Never include URLs in the content text
+      - Extract all media URLs to images array
+      - Extract profile links to profiles array
+      - All other links go to urls array
+      - Use only plain text, no markdown
+      - Maintain chronological order of discussions
+      - Highlight controversial opinions
+      - Output ONLY valid JSON`;
+    
+    const userPrompt = `Please analyze and summarize the following tweets. Each tweet object contains:
+      - fullText: The main content of the tweet
+      - media: Any attached media (images, videos)
+      - urls: Any URLs mentioned in the tweet
+      - quotedTweet: Any tweets that were quoted
+      - replyTo: Information about tweets this is replying to
 
-            Here are the tweets to summarize:
-            ${JSON.stringify(filteredTweets, null, 2)}
-            , each tweet has following structure:
-            ${Tweet} \n
-            Please provide a comprehensive summary following the format specified.`
-          },
-        ],
+      Here are the tweets to summarize:
+      ${JSON.stringify(filteredTweets, null, 2)}
+      
+      Please provide a comprehensive summary following the format specified.`;
+    
+    // Generate content using Gemini
+    const result = await model.generateContent({
+      contents: [
+        { role: "user", parts: [{ text: systemPrompt + "\n\n" + userPrompt }] }
+      ],
+      generationConfig: {
         temperature: 0.7,
+        maxOutputTokens: 4096,
       },
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-          'Content-Type': 'application/json',
-        },
-      }
-    );
+    });
+    
+    const response = result.response;
+    const generatedText = response.text();
+    
     return NextResponse.json({
       tweetIds: filteredTweets.map((tweet: Tweet) => tweet.id),
-      summary: response.data.choices[0].message.content 
+      summary: generatedText
     });
   } catch (error) {
     console.error("Error fetching tweets:", error);

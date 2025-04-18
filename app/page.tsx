@@ -212,7 +212,7 @@ export default function Home() {
               <Link href="/sign-in">Create Your Account <ArrowRight className="ml-2 h-4 w-4" /></Link>
             </Button>
           </div>
-        </div>
+      </div>
       </section>
 
       {/* Pricing Section */}
@@ -221,7 +221,7 @@ export default function Home() {
           <Pricing />
         </div>
       )}
-    </PageWrapper>
+      </PageWrapper>
   );
 }
 
